@@ -1,0 +1,113 @@
+Global:
+  use_gpu: true
+  epoch_num: 100
+  log_smooth_window: 20
+  print_batch_step: 10
+  save_model_dir: ./output/ABInet
+  save_epoch_step: 1
+  eval_batch_step:
+  - 0
+  - 2000
+  cal_metric_during_train: true
+  pretrained_model: ./pretrain_models/rec_r45_abinet_train/abinet_vl_pretrained
+  checkpoints: 
+  save_inference_dir: ./output/ABInet/Inference/
+  use_visualdl: false
+  infer_img: doc/imgs_words_en/word_10.png
+  character_dict_path: vi_vietnam.txt
+  character_type: vi
+  max_text_length: 25
+  infer_mode: false
+  use_space_char: false
+  save_res_path: ./output/ABInet
+Optimizer:
+  name: Adam
+  beta1: 0.9
+  beta2: 0.99
+  clip_norm: 20.0
+  lr:
+    name: Piecewise
+    decay_epochs:
+    - 6
+    values:
+    - 0.0001
+    - 1.0e-05
+  regularizer:
+    name: L2
+    factor: 0.0
+Architecture:
+  model_type: rec
+  algorithm: ABINet
+  in_channels: 3
+  Transform: null
+  Backbone:
+    name: ResNet45
+  Head:
+    name: ABINetHead
+    use_lang: true
+    iter_size: 3
+Loss:
+  name: CELoss
+  ignore_index: 100
+PostProcess:
+  name: ABINetLabelDecode
+Metric:
+  name: RecMetric
+  main_indicator: acc
+Train:
+  dataset:
+    name: SimpleDataSet
+    data_dir: ../BKAI2023/new_train
+    label_file_list:
+    - ../BKAI2023/train.txt
+    transforms:
+    - DecodeImage:
+        img_mode: RGB
+        channel_first: false
+    - ABINetRecAug: null
+    - ABINetLabelEncode:
+        ignore_index: 100
+    - ABINetRecResizeImg:
+        image_shape:
+        - 3
+        - 32
+        - 128
+    - KeepKeys:
+        keep_keys:
+        - image
+        - label
+        - length
+  loader:
+    shuffle: true
+    batch_size_per_card: 64
+    drop_last: true
+    num_workers: 2
+Eval:
+  dataset:
+    name: SimpleDataSet
+    data_dir: ../BKAI2023/new_train
+    label_file_list:
+    - ../BKAI2023/val.txt
+    transforms:
+    - DecodeImage:
+        img_mode: RGB
+        channel_first: false
+    - ABINetLabelEncode:
+        ignore_index: 100
+    - ABINetRecResizeImg:
+        image_shape:
+        - 3
+        - 32
+        - 128
+    - KeepKeys:
+        keep_keys:
+        - image
+        - label
+        - length
+  loader:
+    shuffle: false
+    drop_last: false
+    batch_size_per_card: 32
+    num_workers: 2
+    use_shared_memory: false
+profiler_options: null
