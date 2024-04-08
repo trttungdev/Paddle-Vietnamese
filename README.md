@@ -21,7 +21,6 @@ img/im3671.jpg_box3.jpg	K
 Tại đậy , đội sẽ chia bộ new_train được BTC cung cấp với tỉ lệ là train : 0.95 , val : 0.05
 
 ## 2. Train model
-Đội đã điều chỉnh file config để phù hợp và tối ưu với cuộc thi .
 
 ### 2.1 Train 
 - ABInet : 
@@ -36,11 +35,11 @@ sh scripts/train_SVTR.sh
 
 ### 2.2 Export model 
 
-Weight được đội cung cấp đã được chọn là ckpt để dự đoán : 
+Weight được cung cấp đã được chọn là ckpt để dự đoán : 
 - ABInet : epoch thứ 10
 - SVTR : epoch thứ 82  
 
-Vì vậy ckpt của của 2 mô hình trên sẽ được đội chọn để xuất ra  phục vụ việc dự đoán :
+Vì vậy ckpt của của 2 mô hình trên sẽ được chọn để xuất ra  phục vụ việc dự đoán :
 
   - ABInet :
   ```
@@ -67,8 +66,7 @@ sh scripts/pred_SVTR.sh
 ```
 
 ### 3.2. Format 
-Sau khi có file 2 prediction_log.txt từ 2 mô hình , file dự đoán sẽ được đưa qua mytools/paddle2txt.py để lấy kết quả dự đoán và sau đó file prediction_log.txt của mỗi mô hình sẽ được đưa qua format_pred.py để kiểm tra và chỉnh sửa lại phù hợp với file submit:
-
+Sau khi có file 2 prediction_log.txt từ 2 mô hình , file dự đoán sẽ được đưa qua mytools/paddle2txt.py để lấy kết quả dự đoán và sau đó file prediction_log.txt của mỗi mô hình 
 ```
 python mytools/paddle2txt.py --input prediction_log.txt --ouput prediction.txt
 
